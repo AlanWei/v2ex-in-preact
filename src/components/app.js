@@ -10,20 +10,19 @@ export default class App extends Component {
 	 *	@param {Object} event		"change" event from [preact-router](http://git.io/preact-router)
 	 *	@param {string} event.url	The newly routed URL
 	 */
-	handleRoute = e => {
-		this.currentUrl = e.url;
-	};
+  handleRoute = e => {
+    this.currentUrl = e.url;
+  };
 
-	render() {
-		return (
+  render() {
+    return (
 			<div id="app">
 				<Header />
 				<Router onChange={this.handleRoute}>
 					<Home path="/" />
-					<Profile path="/profile/" user="me" />
-					<Profile path="/profile/:user" />
+					<Profile path="/tabs/:tab" />
 				</Router>
 			</div>
-		);
-	}
+    );
+  }
 }

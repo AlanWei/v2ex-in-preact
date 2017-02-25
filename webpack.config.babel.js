@@ -1,4 +1,5 @@
 import webpack from 'webpack';
+import 'whatwg-fetch';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import autoprefixer from 'autoprefixer';
@@ -13,7 +14,7 @@ const CSS_MAPS = ENV!=='production';
 
 module.exports = {
 	context: path.resolve(__dirname, "src"),
-	entry: './index.js',
+	entry: ['whatwg-fetch', './index.js'],
 
 	output: {
 		path: path.resolve(__dirname, "build"),

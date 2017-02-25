@@ -3,16 +3,15 @@ import { Link } from 'preact-router';
 import style from './style';
 
 export default class Header extends Component {
-	render() {
-		return (
+  render() {
+    return (
 			<header class={style.header}>
-				<h1>Preact App</h1>
+				<Link href="/"><h1>V2EX</h1></Link>
 				<nav>
-					<Link href="/">Home</Link>
-					<Link href="/profile">Me</Link>
-					<Link href="/profile/john">John</Link>
+					<Link href="/tabs/hot">最热</Link>
+					<Link href="/tabs/latest">最新</Link>
 				</nav>
 			</header>
-		);
-	}
+    );
+  }
 }

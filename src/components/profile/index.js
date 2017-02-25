@@ -1,42 +1,69 @@
 import { h, Component } from 'preact';
+import { Request } from '../../utils/fetchUtils';
 import style from './style';
 
 export default class Profile extends Component {
-	state = {
-		count: 0
-	};
+  constructor(props) {
+    super(props);
+
+    this.getTopics = this.getTopics.bind(this);
+    this.state = {
+      isLoading: false,
+      topics: []
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.matches.tab !== nextProps.matches.tab) {
+      const url = `http://www.v2ex.com/api/topics/${nextProps.matches.tab}.json`;
+      this.getTopics(url);
+    }
+  }
 
 	// gets called when this route is navigated to
-	componentDidMount() {
-		// start a timer for the clock:
-		this.timer = setInterval(::this.updateTime, 1000);
-		this.updateTime();
+  componentDidMount() {
+    const { tab } = this.props.matches;
+    const url = `http://www.v2ex.com/api/topics/${tab}.json`;
+    this.getTopics(url);
+  }
 
-		// every time we get remounted, increment a counter:
-		this.setState({ count: this.state.count+1 });
-	}
+  getTopics(url) {
+    Request({
+      url
+    }, () => {
+      this.setState({
+        isLoading: true
+      });
+    }, (json) => {
+      this.setState({
+        isLoading: false,
+        topics: json
+      });
+    });
+  }
 
 	// gets called just before navigating away from the route
-	componentWillUnmount() {
-		clearInterval(this.timer);
-	}
+  componentWillUnmount() {
+  }
 
-	// update the current time
-	updateTime() {
-		let time = new Date().toLocaleString();
-		this.setState({ time });
-	}
-
-	// Note: `user` comes from the URL, courtesy of our router
-	render({ user }, { time, count }) {
-		return (
+  render({ tab }, { topics, isLoading }) {
+    return (
 			<div class={style.profile}>
-				<h1>Profile: { user }</h1>
-				<p>This is the user profile for a user named { user }.</p>
-
-				<div>Current time: { time }</div>
-				<div>Profile route mounted { count } times.</div>
+        <div class={style.main}>
+          {
+            isLoading ?
+            <h2>Loading...</h2>
+            :
+            topics.map(t => {
+              return (<div class={style.topic}>
+                <div class={style.title}>{t.title}</div>
+                <div class={style.desc}>{t.content.substring(0, 200)}</div>
+                <div class={style.replies}>{t.replies}</div>
+              </div>);
+            })
+          }
+        </div>
 			</div>
-		);
-	}
+    );
+  }
 }
