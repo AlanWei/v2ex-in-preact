@@ -4,17 +4,28 @@
 	background-color: #ececec;
 	min-height: 100%;
 	width: 100%;
-	.main {
-		background-color: #fff;
-	}
+	.main {}
 	.topic {
+		box-sizing: border-box;
+		box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
+		border-radius: 2px;
 		font-size: 12px;
-		border: 1px solid #e9e9e9;
+		background-color: white;
+		margin-bottom: 6px;
 		padding: 6px;
+		&:last-child {
+			margin-bottom: 0;
+		}
 		.title {
 			font-size: 14px;
+			font-weight: bold;
+			margin-bottom: 6px;
 		}
-		.replies {
+		.footer {
+			margin-top: 6px;
+			.item {
+				margin-right: 6px;
+			}
 		}
 	}
 }

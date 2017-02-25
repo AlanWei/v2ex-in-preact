@@ -34,10 +34,10 @@ export default class Profile extends Component {
       this.setState({
         isLoading: true
       });
-    }, (json) => {
+    }, (ro) => {
       this.setState({
         isLoading: false,
-        topics: json
+        topics: ro
       });
     });
   }
@@ -57,8 +57,11 @@ export default class Profile extends Component {
             topics.map(t => {
               return (<div class={style.topic}>
                 <div class={style.title}>{t.title}</div>
-                <div class={style.desc}>{t.content.substring(0, 200)}</div>
-                <div class={style.replies}>{t.replies}</div>
+                <div class={style.desc}>{t.content.substring(0, 100)}</div>
+                <div class={style.footer}>
+                  <span class={style.item}>节点: {t.node.title}</span>
+                  <span class={style.item}>回复: {t.replies}</span>
+                </div>
               </div>);
             })
           }
