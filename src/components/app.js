@@ -4,6 +4,7 @@ import { Router } from 'preact-router';
 import Header from './header';
 import Home from './home';
 import Profile from './profile';
+import Topic from './topic';
 
 export default class App extends Component {
 	/** Gets fired when the route changes.
@@ -21,6 +22,7 @@ export default class App extends Component {
 				<Router onChange={this.handleRoute}>
 					<Home path="/" />
 					<Profile path="/tabs/:tab" />
+					<Topic path="/topics/:id" />
 				</Router>
 			</div>
     );

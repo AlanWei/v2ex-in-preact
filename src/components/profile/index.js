@@ -1,5 +1,7 @@
 import { h, Component } from 'preact';
+import { Link } from 'preact-router';
 import { Request } from '../../utils/fetchUtils';
+import { getUrl } from '../../utils/commonUtils';
 import style from './style';
 
 export default class Profile extends Component {
@@ -15,16 +17,14 @@ export default class Profile extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.matches.tab !== nextProps.matches.tab) {
-      const url = `http://www.v2ex.com/api/topics/${nextProps.matches.tab}.json`;
-      this.getTopics(url);
+      this.getTopics(getUrl(nextProps.matches.tab));
     }
   }
 
 	// gets called when this route is navigated to
   componentDidMount() {
     const { tab } = this.props.matches;
-    const url = `http://www.v2ex.com/api/topics/${tab}.json`;
-    this.getTopics(url);
+    this.getTopics(getUrl(tab));
   }
 
   getTopics(url) {
@@ -48,15 +48,16 @@ export default class Profile extends Component {
 
   render({ tab }, { topics, isLoading }) {
     return (
-			<div class={style.profile}>
+			<div class={style.root}>
         <div class={style.main}>
           {
             isLoading ?
             <h2>Loading...</h2>
             :
             topics.map(t => {
+              const topicUrl = `/topics/${t.id}`;
               return (<div class={style.topic}>
-                <div class={style.title}>{t.title}</div>
+                <div class={style.title}><Link href={topicUrl}>{t.title}</Link></div>
                 <div class={style.desc}>{t.content.substring(0, 100)}</div>
                 <div class={style.footer}>
                   <span class={style.item}>节点: {t.node.title}</span>

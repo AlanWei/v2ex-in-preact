@@ -8,6 +8,7 @@ export default class Header extends Component {
 			<header class={style.header}>
 				<Link href="/"><h1>V2EX</h1></Link>
 				<nav>
+					<Link href="/tabs/jobs">酷工作</Link>
 					<Link href="/tabs/hot">最热</Link>
 					<Link href="/tabs/latest">最新</Link>
 				</nav>

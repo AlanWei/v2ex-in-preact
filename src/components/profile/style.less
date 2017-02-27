@@ -1,5 +1,5 @@
 @import '~style/helpers';
-.profile {
+.root {
 	padding: 72px 20px 16px 20px;
 	background-color: #ececec;
 	min-height: 100%;
@@ -20,6 +20,16 @@
 			font-size: 14px;
 			font-weight: bold;
 			margin-bottom: 6px;
+			a {
+				text-decoration: none;
+				color: rgba(0, 0, 0, 0.75);
+				&:hover, &:active {
+					color: rgba(0,0,0,.5);
+				}
+			}
+		}
+		.desc {
+			word-wrap: break-word;
 		}
 		.footer {
 			margin-top: 6px;
