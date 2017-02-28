@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import { Link } from 'preact-router';
 import { Request } from '../../utils/fetchUtils';
-import { getUrl } from '../../utils/commonUtils';
+import { getTopicUrl } from '../../utils/commonUtils';
 import style from './style';
 
 export default class Profile extends Component {
@@ -17,14 +17,14 @@ export default class Profile extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.matches.tab !== nextProps.matches.tab) {
-      this.getTopics(getUrl(nextProps.matches.tab));
+      this.getTopics(getTopicUrl(nextProps.matches.tab));
     }
   }
 
 	// gets called when this route is navigated to
   componentDidMount() {
     const { tab } = this.props.matches;
-    this.getTopics(getUrl(tab));
+    this.getTopics(getTopicUrl(tab));
   }
 
   getTopics(url) {
