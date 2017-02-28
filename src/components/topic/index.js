@@ -53,23 +53,30 @@ class Topic extends Component {
     });
   }
   
-  render({ id }, { topic, replies }) {
+  render({ id }, { isLoading, topic, replies }) {
     return (
 			<div class={style.root}>
         <div class={style.main}>
-          <div class={style.card}>
-            <div class={style.title}>{topic.title}</div>
-            <div dangerouslySetInnerHTML={{__html: topic.content_rendered}} />
-          </div>
-          <div>
-            {
-              replies.map(r => {
-                return (<div class={style.card}>
-                {r.content_rendered}
-                </div>);
-              })
-            }
-          </div>
+          {
+            isLoading ?
+            <h2>Loading...</h2>
+            :
+            <div>
+              <div class={style.card}>
+                <div class={style.title}>{topic.title}</div>
+                <div dangerouslySetInnerHTML={{__html: topic.content_rendered}} />
+              </div>
+              <div>
+                {
+                  replies.map(r => {
+                    return (<div class={style.card}>
+                      <div dangerouslySetInnerHTML={{__html: r.content_rendered}} />
+                    </div>);
+                  })
+                }
+              </div>
+            </div>
+          }
         </div>
 			</div>
     );
