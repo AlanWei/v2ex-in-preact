@@ -10,8 +10,6 @@ import path from 'path';
 import V8LazyParseWebpackPlugin from 'v8-lazy-parse-webpack-plugin';
 const ENV = process.env.NODE_ENV || 'development';
 
-const CSS_MAPS = ENV!=='production';
-
 module.exports = {
   context: path.resolve(__dirname, "src"),
   entry: ['whatwg-fetch', './index.js'],
@@ -23,8 +21,8 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['', '.jsx', '.js', '.json', '.less'],
-    modulesDirectories: [
+    extensions: ['.jsx', '.js', '.json', '.less'],
+    modules: [
       path.resolve(__dirname, "src/lib"),
       path.resolve(__dirname, "node_modules"),
       'node_modules'
@@ -38,62 +36,113 @@ module.exports = {
   },
 
   module: {
-    preLoaders: [
-      {
-        test: /\.jsx?$/,
-        exclude: path.resolve(__dirname, 'src'),
-        loader: 'source-map-loader'
-      }
-    ],
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel'
+        use: {
+          loader: 'babel-loader'
+        }
       },
       {
         // Transform our own .(less|css) files with PostCSS and CSS-modules
         test: /\.(less|css)$/,
-        include: [path.resolve(__dirname, 'src/components')],
-        loader: ExtractTextPlugin.extract('style?singleton', [
-          `css-loader?modules&importLoaders=1&sourceMap=${CSS_MAPS}`,
-          'postcss-loader',
-          `less-loader?sourceMap=${CSS_MAPS}`
-        ].join('!'))
+        include: path.resolve(__dirname, 'src/components'),
+        use: ExtractTextPlugin.extract({
+          fallback: {
+            loader: 'style-loader',
+            options: {
+              singleton: true
+            }
+          },
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                modules: true,
+                importLoaders: 1,
+                sourceMap: ENV !== 'production'
+              }
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: () => {
+                  return [
+                    require('autoprefixer')
+                  ];
+                }
+              }
+            },
+            {
+              loader: 'less-loader',
+              options: {
+                sourceMap: ENV !== 'production'
+              }
+            }
+          ]
+        })
       },
       {
         test: /\.(less|css)$/,
-        exclude: [path.resolve(__dirname, 'src/components')],
-        loader: ExtractTextPlugin.extract('style?singleton', [
-          `css?sourceMap=${CSS_MAPS}`,
-          `postcss`,
-          `less?sourceMap=${CSS_MAPS}`
-        ].join('!'))
-      },
-      {
-        test: /\.json$/,
-        loader: 'json'
+        include: path.resolve(__dirname, 'src'),
+        exclude: path.resolve(__dirname, 'src/components'),
+        use: ExtractTextPlugin.extract({
+          fallback: {
+            loader: 'style-loader',
+            options: {
+              singleton: true
+            }
+          },
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                sourceMap: ENV !== 'production'
+              }
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: () => {
+                  return [
+                    require('autoprefixer')
+                  ];
+                }
+              }
+            },
+            {
+              loader: 'less-loader',
+              options: {
+                sourceMap: ENV !== 'production'
+              }
+            }
+          ]
+        })
       },
       {
         test: /\.(xml|html|txt|md)$/,
-        loader: 'raw'
+        use: {
+          loader: 'raw-loader'
+        }
       },
       {
         test: /\.(svg|woff2?|ttf|eot|jpe?g|png|gif)(\?.*)?$/i,
-        loader: ENV==='production' ? 'file?name=[path][name]_[hash:base64:5].[ext]' : 'url'
+        use: ENV === 'production' ? {
+          loader: 'file-loader?name=[path][name]_[hash:base64:5].[ext]'
+        } : {
+          loader: 'url-loader'
+        }
       }
     ]
   },
 
-  postcss: () => [
-    autoprefixer({ browsers: 'last 2 versions' })
-  ],
-
   plugins: ([
-    new webpack.NoErrorsPlugin(),
-    new ExtractTextPlugin('style.css', {
+    new webpack.NoEmitOnErrorsPlugin(),
+    new ExtractTextPlugin({
+      filename: 'style.css',
       allChunks: true,
-      disable: ENV!=='production'
+      disable: ENV !== 'production'
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(ENV)
@@ -106,7 +155,7 @@ module.exports = {
       { from: './manifest.json', to: './' },
       { from: './favicon.ico', to: './' }
     ])
-  ]).concat(ENV==='production' ? [
+  ]).concat(ENV === 'production' ? [
     new V8LazyParseWebpackPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       output: {
@@ -154,12 +203,11 @@ module.exports = {
     setImmediate: false
   },
 
-  devtool: ENV==='production' ? 'source-map' : 'cheap-module-eval-source-map',
+  devtool: ENV === 'production' ? 'cheap-module-source-map' : 'cheap-module-eval-source-map',
 
   devServer: {
     port: process.env.PORT || 8080,
     host: 'localhost',
-    colors: true,
     publicPath: '/',
     contentBase: './src',
     historyApiFallback: true,
