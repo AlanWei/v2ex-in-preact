@@ -2,9 +2,9 @@ require('babel-register');
 var webpack = require('../webpack.config.babel.js');
 var path = require('path');
 
-webpack.module.loaders.push({
+webpack.module.rules.push({
 	test: /\.jsx?$/,
-	loader: 'isparta',
+	use: 'isparta-loader',
 	include: path.resolve(__dirname, '../src')
 });
 
@@ -29,6 +29,7 @@ module.exports = function(config) {
 		browsers: ['PhantomJS'],
 
 		files: [
+			'node_modules/babel-polyfill/dist/polyfill.js',
 			'test/browser/**/*.js'
 		],
 

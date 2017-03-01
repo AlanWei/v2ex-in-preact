@@ -1,6 +1,7 @@
 import { h, render, rerender } from 'preact';
 import { route } from 'preact-router';
 import App from 'components/app';
+import Home from 'components/home';
 import 'style';
 
 /*global sinon,expect*/
@@ -26,24 +27,15 @@ describe('App', () => {
   describe('routing', () => {
     it('should render the homepage', () => {
       render(<App />, scratch);
-
-      expect(scratch.innerHTML).to.contain('Home');
+      expect(scratch.innerHTML).to.contain('Hello V2EX');
     });
 
-    it('should render /profile', () => {
+    it('should render /tabs/jobs', () => {
       render(<App />, scratch);
-      route('/profile');
+      route('/tabs/jobs');
       rerender();
 
-      expect(scratch.innerHTML).to.contain('Profile: me');
-    });
-
-    it('should render /profile/:user', () => {
-      render(<App />, scratch);
-      route('/profile/john');
-      rerender();
-
-      expect(scratch.innerHTML).to.contain('Profile: john');
+      expect(scratch.innerHTML).to.contain('节点:');
     });
   });
 });

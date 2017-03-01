@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import { Router } from 'preact-router';
+import 'whatwg-fetch';
 
 import Header from './header';
 import Home from './home';
@@ -30,16 +31,12 @@ export default class App extends Component {
       isMobile: mobilecheck()
     });
   }
-	
-  handleRoute = e => {
-    this.currentUrl = e.url;
-  };
 
   render({}, { isMobile }) {
     return (
 			<div id="app">
 				<Header />
-				<Router onChange={this.handleRoute}>
+				<Router>
 					<Home path="/" />
 					<Profile path="/tabs/:tab" />
 					<Topic path="/topics/:id" />
