@@ -27,15 +27,8 @@ describe('App', () => {
   describe('routing', () => {
     it('should render the homepage', () => {
       render(<App />, scratch);
+      route('/');
       expect(scratch.innerHTML).to.contain('Hello V2EX');
-    });
-
-    it('should render /tabs/jobs', () => {
-      render(<App />, scratch);
-      route('/tabs/jobs');
-      rerender();
-
-      expect(scratch.innerHTML).to.contain('节点:');
     });
   });
 });
