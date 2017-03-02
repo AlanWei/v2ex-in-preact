@@ -32,7 +32,7 @@ module.exports = {
       }
     }, {
       test: /\.(less|css)$/,
-      include: path.resolve(__dirname, 'src'),
+      include: [path.resolve(__dirname, 'src'),path.resolve(__dirname, 'node_modules/pure-css-loader/dist')],
       exclude: path.resolve(__dirname, 'src/components'),
       use: ExtractTextPlugin.extract({
         fallback: {
@@ -126,6 +126,7 @@ module.exports = {
     alias: {
       components: path.resolve(__dirname, "src/components"),    // used for tests
       style: path.resolve(__dirname, "src/style"),
+      'pure-css-loader': path.resolve(__dirname, 'node_modules/pure-css-loader/dist/css-loader.css'),
       'react': 'preact-compat',
       'react-dom': 'preact-compat'
     }

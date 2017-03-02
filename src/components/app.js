@@ -6,6 +6,7 @@ import Header from './header';
 import Home from './home';
 import Profile from './profile';
 import Topic from './topic';
+require('pure-css-loader');
 
 function mobilecheck() {
   let check = false;

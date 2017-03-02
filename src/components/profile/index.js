@@ -52,7 +52,7 @@ export default class Profile extends Component {
         <div class={style.main}>
           {
             isLoading ?
-            <h2>Loading...</h2>
+            <div class="loader loader-ball is-active"></div>
             :
             topics.map(t => {
               const topicUrl = `/topics/${t.id}`;
