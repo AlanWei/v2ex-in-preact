@@ -1,22 +1,119 @@
-import webpack from 'webpack';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import autoprefixer from 'autoprefixer';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
-import ReplacePlugin from 'replace-bundle-webpack-plugin';
-import OfflinePlugin from 'offline-plugin';
-import path from 'path';
-import V8LazyParseWebpackPlugin from 'v8-lazy-parse-webpack-plugin';
+const webpack = require('webpack');
+const ExtractTextPlugin = require ('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require ('html-webpack-plugin');
+const autoprefixer = require ('autoprefixer');
+const CopyWebpackPlugin = require ('copy-webpack-plugin');
+const ReplacePlugin = require ('replace-bundle-webpack-plugin');
+const OfflinePlugin = require ('offline-plugin');
+const path = require ('path');
+const V8LazyParseWebpackPlugin = require ('v8-lazy-parse-webpack-plugin');
 const ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
+  // better to set to make configuration independent from CWD
   context: path.resolve(__dirname, "src"),
-  entry: ['./index.js'],
+  entry: './index.js',
 
   output: {
     path: path.resolve(__dirname, "build"),
     publicPath: '/',
     filename: 'bundle.js'
+  },
+
+  module: {
+    rules: [{
+      test: /\.jsx?$/,
+      exclude: /node_modules/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: [ 'es2015' ]
+        }
+      }
+    }, {
+      test: /\.(less|css)$/,
+      include: path.resolve(__dirname, 'src'),
+      exclude: path.resolve(__dirname, 'src/components'),
+      use: ExtractTextPlugin.extract({
+        fallback: {
+          loader: 'style-loader',
+          options: {
+            singleton: true
+          }
+        },
+        use: [{
+          loader: 'css-loader',
+          options: {
+            minimize: ENV === 'production',
+            sourceMap: ENV === 'development',
+            importLoaders: 1
+          }
+        }, {
+          loader: 'postcss-loader',
+          options: {
+            plugins: () => {
+              return [
+                require('autoprefixer')
+              ];
+            }
+          }
+        }, {
+          loader: 'less-loader',
+          options: {
+            sourceMap: ENV === 'development'
+          }
+        }]
+      })
+    }, {
+      // Transform our own .(less|css) files with PostCSS and CSS-modules
+      test: /\.(less|css)$/,
+      include: path.resolve(__dirname, 'src/components'),
+      use: ExtractTextPlugin.extract({
+        fallback: {
+          loader: 'style-loader',
+          options: {
+            singleton: true
+          }
+        },
+        use: [{
+          loader: 'css-loader',
+          options: {
+            modules: true,
+            localIdentName: '[path][name]__[local]',
+            minimize: ENV === 'production',
+            sourceMap: ENV === 'development',
+            importLoaders: 1
+          }
+        }, {
+          loader: 'postcss-loader',
+          options: {
+            plugins: () => {
+              return [
+                require('autoprefixer')
+              ];
+            }
+          }
+        }, {
+          loader: 'less-loader',
+          options: {
+            sourceMap: ENV === 'development'
+          }
+        }]
+      })
+    }, {
+      test: /\.(xml|html|txt|md)$/,
+      use: {
+        loader: 'raw-loader'
+      }
+    },
+    {
+      test: /\.(svg|woff2?|ttf|eot|jpe?g|png|gif)(\?.*)?$/i,
+      use: ENV === 'production' ? {
+        loader: 'file-loader?name=[path][name]_[hash:base64:5].[ext]'
+      } : {
+        loader: 'url-loader'
+      }
+    }]
   },
 
   resolve: {
@@ -32,108 +129,6 @@ module.exports = {
       'react': 'preact-compat',
       'react-dom': 'preact-compat'
     }
-  },
-
-  module: {
-    rules: [
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader'
-        }
-      },
-      {
-        // Transform our own .(less|css) files with PostCSS and CSS-modules
-        test: /\.(less|css)$/,
-        include: path.resolve(__dirname, 'src/components'),
-        use: ExtractTextPlugin.extract({
-          fallback: {
-            loader: 'style-loader',
-            options: {
-              singleton: true
-            }
-          },
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                modules: true,
-                importLoaders: 1,
-                sourceMap: ENV !== 'production'
-              }
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                plugins: () => {
-                  return [
-                    require('autoprefixer')
-                  ];
-                }
-              }
-            },
-            {
-              loader: 'less-loader',
-              options: {
-                sourceMap: ENV !== 'production'
-              }
-            }
-          ]
-        })
-      },
-      {
-        test: /\.(less|css)$/,
-        include: path.resolve(__dirname, 'src'),
-        exclude: path.resolve(__dirname, 'src/components'),
-        use: ExtractTextPlugin.extract({
-          fallback: {
-            loader: 'style-loader',
-            options: {
-              singleton: true
-            }
-          },
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                sourceMap: ENV !== 'production'
-              }
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                plugins: () => {
-                  return [
-                    require('autoprefixer')
-                  ];
-                }
-              }
-            },
-            {
-              loader: 'less-loader',
-              options: {
-                sourceMap: ENV !== 'production'
-              }
-            }
-          ]
-        })
-      },
-      {
-        test: /\.(xml|html|txt|md)$/,
-        use: {
-          loader: 'raw-loader'
-        }
-      },
-      {
-        test: /\.(svg|woff2?|ttf|eot|jpe?g|png|gif)(\?.*)?$/i,
-        use: ENV === 'production' ? {
-          loader: 'file-loader?name=[path][name]_[hash:base64:5].[ext]'
-        } : {
-          loader: 'url-loader'
-        }
-      }
-    ]
   },
 
   plugins: ([
