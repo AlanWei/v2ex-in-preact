@@ -1,11 +1,12 @@
 import { h, Component } from 'preact';
 import { Router } from 'preact-router';
-import 'whatwg-fetch';
 
 import Header from './header';
 import Home from './home';
 import Profile from './profile';
 import Topic from './topic';
+require('whatwg-fetch');
+require('lib-flexible');
 require('pure-css-loader');
 
 function mobilecheck() {

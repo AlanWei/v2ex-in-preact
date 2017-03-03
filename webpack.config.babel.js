@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require ('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require ('html-webpack-plugin');
 const autoprefixer = require ('autoprefixer');
+const px2rem = require ('postcss-px2rem');
 const CopyWebpackPlugin = require ('copy-webpack-plugin');
 const ReplacePlugin = require ('replace-bundle-webpack-plugin');
 const OfflinePlugin = require ('offline-plugin');
@@ -16,7 +17,7 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, "build"),
-    publicPath: './',
+    publicPath: '/',
     filename: 'bundle.js'
   },
 
@@ -32,7 +33,10 @@ module.exports = {
       }
     }, {
       test: /\.(less|css)$/,
-      include: [path.resolve(__dirname, 'src'),path.resolve(__dirname, 'node_modules/pure-css-loader/dist')],
+      include: [
+        path.resolve(__dirname, 'src'),
+        path.resolve(__dirname, 'node_modules/pure-css-loader/dist')
+      ],
       exclude: path.resolve(__dirname, 'src/components'),
       use: ExtractTextPlugin.extract({
         fallback: {
@@ -53,7 +57,8 @@ module.exports = {
           options: {
             plugins: () => {
               return [
-                require('autoprefixer')
+                autoprefixer({ browsers: 'last 2 versions' }),
+                px2rem({ remUnit: 37.5 })
               ];
             }
           }
@@ -89,7 +94,8 @@ module.exports = {
           options: {
             plugins: () => {
               return [
-                require('autoprefixer')
+                autoprefixer({ browsers: 'last 2 versions' }),
+                px2rem({ remUnit: 37.5 })
               ];
             }
           }
