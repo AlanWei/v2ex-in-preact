@@ -1,1 +1,1 @@
-# preact-boilerplate
+# v2ex-in-preact
