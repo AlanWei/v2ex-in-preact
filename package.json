@@ -1,7 +1,7 @@
 {
-  "name": "preact-boilerplate",
+  "name": "v2ex-in-preact",
   "version": "1.0.0",
-  "description": "Ready-to-go Preact starter project powered by webpack.",
+  "description": "A simple V2EX client using preact.",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --inline --hot --progress",
     "start": "npm run build && serve build -s -c 1",
@@ -15,10 +15,11 @@
   "keywords": [
     "preact",
     "boilerplate",
-    "webpack"
+    "webpack",
+    "v2ex"
   ],
   "license": "MIT",
-  "author": "Jason Miller <jason@developit.ca>",
+  "author": "Alan Wei <alanweichangran@gmail.com>",
   "devDependencies": {
     "autoprefixer": "^6.4.0",
     "babel": "^6.5.2",
